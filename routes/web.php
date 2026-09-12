@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MeterController;
+use App\Http\Controllers\PwaManifestController;
 use App\Http\Controllers\ReadingController;
 use Illuminate\Support\Facades\Route;
 
@@ -9,6 +10,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/manifest.json', PwaManifestController::class)->name('pwa.manifest');
+Route::view('/offline', 'offline')->name('offline');
 Route::get('/login', [LoginController::class,'show'])->name('login.show');
 Route::post('/login', [LoginController::class,'authenticate'])->name('login');
 Route::post('/logout', [LoginController::class,'logout'])->name('logout');
