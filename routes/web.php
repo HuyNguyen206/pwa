@@ -11,6 +11,9 @@ Route::get('/', function () {
 });
 
 Route::get('/manifest.json', PwaManifestController::class)->name('pwa.manifest');
+Route::get('/precache-manifest.json', \App\Http\Controllers\PrecacheManifestController::class)
+    ->name('precache.manifest');
+
 Route::view('/offline', 'offline')->name('offline');
 Route::get('/login', [LoginController::class,'show'])->name('login.show');
 Route::post('/login', [LoginController::class,'authenticate'])->name('login');

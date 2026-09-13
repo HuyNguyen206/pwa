@@ -23,12 +23,12 @@ return [
 
     'screenshots' => [
         [
-            'src' => '/screenshots/mobile.png',
+            'src' => '/screenshoots/mobile.png',
             'sizes' => '842x933',
             'type' => 'image/png',
         ],
         [
-            'src' => '/screenshots/desktop.png',
+            'src' => '/screenshoots/desktop.png',
             'sizes' => '2525x1252',
             'type' => 'image/png',
             'form_factor' => 'wide',
