@@ -29,12 +29,15 @@ install:
 # the dev server at the URL in public/hot, and a host-bound vite is unreachable
 # from there. Skipped when it is already up, because a second instance dies on
 # strictPort and deletes public/hot on its way out, breaking assets for the
-# instance that is still running.
+# instance that is still running. A live port with no public/hot means exactly
+# that happened, so treat it as broken and restart rather than report it healthy.
 vite:
 	@if $(COMPOSE) exec -T -u=dev pwa \
-		curl -ksf -o /dev/null --max-time 2 https://localhost:5174/@vite/client 2>/dev/null; then \
+		curl -ksf -o /dev/null --max-time 2 https://localhost:5174/@vite/client 2>/dev/null \
+		&& [ -f public/hot ]; then \
 		echo "vite: already running"; \
 	else \
+		$(MAKE) --no-print-directory vite-stop >/dev/null; \
 		$(COMPOSE) exec -d -u=dev pwa \
 			sh -lc 'npm run dev > storage/logs/vite.log 2>&1'; \
 		echo "vite: started (logs: storage/logs/vite.log)"; \

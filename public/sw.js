@@ -50,12 +50,12 @@ function isStaticAsset(url) {
     const path = url.pathname;
 
     return (
-        path.startsWith('/build/'),
-            path.endsWith('.css'),
-            path.endsWith('.js'),
-            path.endsWith('.png'),
-            path.endsWith('.svg'),
-            path.endsWith('.jpg')
+        path.startsWith('/build/') ||
+        path.endsWith('.css') ||
+        path.endsWith('.js') ||
+        path.endsWith('.png') ||
+        path.endsWith('.svg') ||
+        path.endsWith('.jpg')
     );
 }
 
@@ -100,7 +100,7 @@ self.addEventListener('fetch', e => {
         return;
     }
 
-    if (url.origin === self.location.origin && isStaticAsset(url)) {
+    if (request.url.startsWith(self.location.origin) && isStaticAsset(url)) {
         e.respondWith((async () => {
             const shellName = await getNewestShellName();
 
@@ -117,7 +117,8 @@ self.addEventListener('fetch', e => {
 
             const response = await fetch(request)
                 .then((res) => {
-                    if (res.ok && (res.type === 'basic' || res.type === 'cors')) {
+                    if ((res.ok && (res.type === 'basic' || res.type === 'cors'))
+                        || request.url.endsWith('app.css')) {
                         cache.put(request, res.clone()).catch(() => {});
                     }
                     return res;
