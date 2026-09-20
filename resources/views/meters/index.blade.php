@@ -11,7 +11,7 @@
           <div class="font-medium">{{ $m->name }} <span class="opacity-60">({{ $m->code }})</span></div>
           <div class="text-sm opacity-75">Readings: {{ $m->readings_count }}</div>
         </div>
-        <div x-show="$store.net.online" class="space-x-2">
+        <div x-cloak x-show="$store.net.confirmOnline" class="space-x-2">
           <a class="px-3 py-2 rounded-md bg-blue-600 hover:bg-blue-500" href="{{ route('meters.show',$m) }}">View</a>
           <a class="px-3 py-2 rounded-md bg-sky-600 hover:bg-sky-500" href="{{ route('meters.edit',$m) }}">Edit</a>
           <form method="POST" action="{{ route('meters.destroy',$m) }}" class="inline">

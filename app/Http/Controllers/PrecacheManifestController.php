@@ -49,7 +49,7 @@ class PrecacheManifestController extends Controller
         return response()->json(
             ['version' => $version, 'urls' => $urls],
             200,
-            ['Cache-Controler' => 'no-cache, no-store, must-revalidate'],
+            ['Cache-Control' => 'no-cache, no-store, must-revalidate'],
             $jsonFlags
         )->setEtag($etag);
     }

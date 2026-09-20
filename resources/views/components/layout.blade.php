@@ -10,8 +10,6 @@
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body x-data
-      x-init="$store.net.init()"
-
     class="min-h-full bg-gray-950 text-gray-100">
   <header class="px-4 py-3 border-b border-white/10 flex items-center justify-between">
     <h1 class="font-semibold">
