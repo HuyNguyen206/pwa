@@ -45,11 +45,18 @@ async function getCurrentVersionAndUrls() {
         throw new Error('No precache manifest available');
     }
 
+    // A 304 carries no body, so res.json() below would throw. Only reachable
+    // when the response bypasses the HTTP cache; fall back to the stored copy.
     if (res.status === 304) {
         const meta = await caches.open(META_CACHE);
         const cached = await meta.match(PRECACHE_ENDPOINT);
+
         if (cached) return cached.json();
+
+        throw new Error('Precache manifest not modified but no copy cached');
     }
+
+    if (!res.ok) throw new Error(`Precache manifest returned ${res.status}`);
 
     const clone = res.clone();
     const json = await res.json();
@@ -108,11 +115,33 @@ async function staleWithRevalidate({request, shellName}) {
     return cached || response || new Response('Offline', {status: 503});
 }
 
+async function precache({cache, urls}) {
+    const failures = [];
+
+    // One cache.add() per URL rather than a single cache.addAll(): addAll is
+    // atomic, so one unreachable entry rejects the whole batch and the install
+    // ends up caching nothing at all. A partial shell still beats an empty one,
+    // and every fetch handler already falls back to the network.
+    await Promise.all(urls.map(async url => {
+        try {
+            await cache.add(url);
+        } catch (err) {
+            failures.push(url);
+            console.warn('[sw] precache failed:', url, err);
+        }
+    }));
+
+    console.info(`[sw] precached ${urls.length - failures.length}/${urls.length} urls`);
+
+    return failures;
+}
+
 self.addEventListener('install', e => {
     e.waitUntil((async () => {
         const {version, urls} = await getCurrentVersionAndUrls();
         const cache = await caches.open(`${CACHE_PREFIX}${version}`);
-        await cache.addAll(urls);
+
+        await precache({cache, urls});
         await self.skipWaiting();
     })());
 });

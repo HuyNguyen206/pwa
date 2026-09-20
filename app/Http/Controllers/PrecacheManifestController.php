@@ -22,8 +22,11 @@ class PrecacheManifestController extends Controller
             ->filter()
             ->map(fn($file) => '/build/' . $file);
 
+        // '/' is deliberately absent: it always redirects (to /meters when
+        // authenticated, /login otherwise), so precaching it would store the
+        // redirect target's body under the '/' key. The navigate handler falls
+        // back to PAGE_CACHE and then '/offline' instead.
         $shell = [
-            '/',
             '/offline',
             '/icons/field_logger_192.png',
             '/icons/field_logger_512.png',
