@@ -1,6 +1,28 @@
 const PRECACHE_ENDPOINT = '/precache-manifest.json';
 const CACHE_PREFIX = 'app-shell-';
 const META_CACHE = 'meta-precache';
+const PAGE_CACHE = 'PAGE_CACHE';
+const IMAGE_PLACEHOLDER = '/images/placeholder.svg';
+
+async function cacheFirst({request, shellName}) {
+    const cache = await caches.open(shellName);
+    const cached = await cache.match(request);
+
+    if (cached) return cached;
+
+    try {
+        const res = await fetch(request);
+
+        if ((res.ok && (res.type === 'basic' || res.type === 'cors'))
+            || request.url.endsWith('app.css')) {
+            cache.put(request, res.clone()).catch(() => {});
+        }
+
+        return res;
+    } catch {
+        return new Response('Offline', {status: 503});
+    }
+}
 
 async function deleteOldShellCaches(keepName) {
     const keys = await caches.keys();
@@ -59,6 +81,33 @@ function isStaticAsset(url) {
     );
 }
 
+async function staleWithRevalidate({request, shellName}) {
+    const cache = await caches.open(shellName);
+    const cached = await cache.match(request);
+
+    if (request.destination === 'image') {
+        try {
+            return await fetch(request);
+        } catch {
+            return await cache.match(IMAGE_PLACEHOLDER)
+                ?? new Response('Offline', {status: 503});
+        }
+    }
+
+
+    const response = await fetch(request)
+        .then((res) => {
+            if ((res.ok && (res.type === 'basic' || res.type === 'cors'))
+                || request.url.endsWith('app.css')) {
+                cache.put(request, res.clone()).catch(() => {});
+            }
+            return res;
+        })
+        .catch(() => null);
+
+    return cached || response || new Response('Offline', {status: 503});
+}
+
 self.addEventListener('install', e => {
     e.waitUntil((async () => {
         const {version, urls} = await getCurrentVersionAndUrls();
@@ -90,9 +139,19 @@ self.addEventListener('fetch', e => {
 
     if (request.mode === 'navigate') {
         e.respondWith((async () => {
+            const cache = await caches.open(PAGE_CACHE);
             try {
-                return await fetch(request);
+                const res = await fetch(request);
+
+                if (res.ok && request.url.startsWith(self.location.origin)) {
+                    cache.put(request, res.clone()).catch(() => {});
+                }
+
+                return res;
             } catch {
+                const cachedPage = await cache.match(request);
+                if (cachedPage) return cachedPage;
+
                 return (await caches.match('/offline')) ??
                     new Response('Offline', {status: 503})
             }
@@ -112,20 +171,8 @@ self.addEventListener('fetch', e => {
                 }
             }
 
-            const cache = await caches.open(shellName);
-            const cached = await cache.match(request);
-
-            const response = await fetch(request)
-                .then((res) => {
-                    if ((res.ok && (res.type === 'basic' || res.type === 'cors'))
-                        || request.url.endsWith('app.css')) {
-                        cache.put(request, res.clone()).catch(() => {});
-                    }
-                    return res;
-                })
-                .catch(() => null);
-
-            return cached || response || new Response('Offline', {status: 503});
+            return await staleWithRevalidate({request, shellName});
+            // return await cacheFirst({request, shellName});
         })());
     }
 });

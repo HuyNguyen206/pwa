@@ -27,6 +27,7 @@ class PrecacheManifestController extends Controller
             '/offline',
             '/icons/field_logger_192.png',
             '/icons/field_logger_512.png',
+            '/images/placeholder.svg'
         ];
 
         if (app()->environment('local')) {

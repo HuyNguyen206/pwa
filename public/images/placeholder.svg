@@ -1,0 +1,8 @@
+<!-- 192x192 transparent offline placeholder -->
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <rect x="8" y="8" width="176" height="176" rx="20" fill="none" stroke="#374151" stroke-width="2"/>
+  <rect x="28" y="40" width="136" height="96" rx="10" fill="none" stroke="#374151" stroke-width="2"/>
+  <path d="M40 124l34-36 22 24 16-16 40 44H40z" fill="#374151" opacity=".9"/>
+  <circle cx="130" cy="60" r="10" fill="#6b7280"/>
+  <path d="M52 148l88-88" stroke="#6b7280" stroke-width="6" stroke-linecap="round" opacity=".9"/>
+</svg>
