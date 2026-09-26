@@ -1,5 +1,5 @@
 <x-layout title="Meters">
-  <div class="flex items-center justify-between mb-3">
+  <div x-cloak x-show="$store.net.confirmOnline" class="flex items-center justify-between mb-3">
     <h2 class="text-lg font-semibold">Meters</h2>
     <a class="px-3 py-2 rounded-md bg-blue-600 hover:bg-blue-500" href="{{ route('meters.create') }}">New Meter</a>
   </div>

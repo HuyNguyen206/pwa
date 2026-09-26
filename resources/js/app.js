@@ -9,6 +9,10 @@ document.addEventListener('alpine:init', () => {
         init() {
             this.offline = !navigator.onLine;
 
+            // navigator.onLine can report true on a reload while offline, so
+            // confirm right away instead of waiting for the first interval tick.
+            if (!this.offline) this.probe();
+
             setInterval(() =>
                 !this.offline ? this.probe() : null, 3000);
 
