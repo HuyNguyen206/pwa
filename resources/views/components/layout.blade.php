@@ -20,6 +20,7 @@
     </form>
   </header>
   <x-online-status></x-online-status>
+  <x-notification-banner></x-notification-banner>
   <main class="p-4">
     @if(session('status'))
       <div class="mb-4 p-2 rounded-md bg-emerald-700/30 border border-emerald-700">{{ session('status') }}</div>

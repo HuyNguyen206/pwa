@@ -33,10 +33,10 @@ class PrecacheManifestController extends Controller
             '/images/placeholder.svg'
         ];
 
-        if (app()->environment('local')) {
-//            $shell[] = 'https://pwa.test:5173/resources/css/app.css';
-            $shell[] = 'https://pwa.test:5174/resources/js/app.js';
-        }
+//        if (app()->environment('local')) {
+//            $shell[] = 'https://pwa.test:5174/resources/css/app.css';
+//            $shell[] = 'https://pwa.test:5174/resources/js/app.js';
+//        }
 
         $urls = collect($shell)
             ->merge($viteFiles)
