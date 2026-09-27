@@ -3,8 +3,9 @@ document.addEventListener('alpine:init', () => {
         return {
             message: '',
             state: 'default',
+            subscribed: false,
 
-            init() {
+            async init() {
                 if (!('Notification' in window)) {
                     this.state = 'unsupported';
                     this.message = 'This browser does not support notifications';
@@ -16,7 +17,17 @@ document.addEventListener('alpine:init', () => {
                 if (this.state === 'denied') {
                     this.message = 'You blocked notifications in your browser settings.';
                 }
+
+                if (this.state !== 'granted') {
+                    return;
+                }
+
+                const registration = await navigator.serviceWorker.ready;
+                const existing = await registration.pushManager.getSubscription();
+
+                this.subscribed = !!existing
             },
+
             async request() {
                 try {
                     const result = await Notification.requestPermission();
@@ -31,7 +42,18 @@ document.addEventListener('alpine:init', () => {
                     console.log(e);
                     this.message = 'something went wrong requesting permission';
                 }
+            },
+
+            async subscribe() {
+                try {
+
+                } catch (e) {
+                    console.error(e);
+                    this.message = 'Unable to subscribe to notifications';
+                }
             }
+
+
         };
     });
 });

@@ -5,7 +5,9 @@
   <meta charset="utf-8" />
     <link rel="manifest" href="{{route('pwa.manifest')}}" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{{ $title }}</title>
+  <meta name="vapid-public-key" content="{{config('push.vapid.public_key')}}">
+  <meta name="csrf-token" content="{{csrf_token()}}">
+    <title>{{ $title }}</title>
   @vite(['resources/css/app.css','resources/js/app.js'])
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>

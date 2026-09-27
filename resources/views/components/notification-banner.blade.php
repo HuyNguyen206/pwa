@@ -2,7 +2,7 @@
 
     <div
         x-data="notificationBanner"
-        x-show="state !== 'granted'"
+        x-show="state !== 'granted' || !subscribed"
         class="mx-4 my-4 p-4 border border-amber-400/40 bg-amber-500/10 rounded text-sm">
 
         <p class="font-semibold mb-1">Enable Notifications</p>
