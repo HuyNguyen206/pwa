@@ -4,20 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class PushSubcriptionController extends Controller
+class PushSubscriptionController extends Controller
 {
     public function store(Request $request)
     {
         $data = $request->validate([
             'endpoint' => ['required', 'string'],
-            'keys.p256dn' => ['required', 'string'],
+            'keys.p256dh' => ['required', 'string'],
             'keys.auth' => ['required', 'string'],
         ]);
 
         $request->user()->pushSubscriptions()->updateOrCreate(
             ['endpoint' => $data['endpoint']],
             [
-                'p256dn' => $data['keys']['p256dn'],
+                'p256dh' => $data['keys']['p256dh'],
                 'auth' => $data['keys']['auth'],
             ]
         );

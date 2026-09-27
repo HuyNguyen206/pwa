@@ -24,8 +24,8 @@ Route::post('/login', [LoginController::class,'authenticate'])->name('login');
 Route::post('/logout', [LoginController::class,'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function(){
-    Route::post('/push-subscriptions', [\App\Http\Controllers\PushSubcriptionController::class, 'store'])->name('push-subscriptions.store');
-    Route::delete('/push-subscriptions', [\App\Http\Controllers\PushSubcriptionController::class, 'destroy'])->name('push-subscriptions.destroy');
+    Route::post('/push-subscriptions', [\App\Http\Controllers\PushSubscriptionController::class, 'store'])->name('push-subscriptions.store');
+    Route::delete('/push-subscriptions', [\App\Http\Controllers\PushSubscriptionController::class, 'destroy'])->name('push-subscriptions.destroy');
 
     Route::resource('meters', MeterController::class);
     Route::post('meters/{meter}/readings', [ReadingController::class, 'store'])->name('meters.readings.store');

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignIdFor(\App\Models\User::class)->constrained()->cascadeOnDelete();
             $table->string('endpoint')->unique();
-            $table->string('p256dn'); //public key for encryption
+            $table->string('p256dh'); //public key for encryption
             $table->string('auth'); //auth secret for encryption
             $table->timestamps();
         });

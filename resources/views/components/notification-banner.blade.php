@@ -13,7 +13,7 @@
 
         <div class="flex items-center gap-2">
             <button
-                @click="request()"
+                @click="setupPushNotifications()"
                 class="px-3 py-1.5 rounded border border-amber-300/70 text-xs font-semibold hover:bg-amber-300/10"
                 x-text="state === 'default' ? 'Do you want to enable notifications?' : 'Try Again'"
             >
