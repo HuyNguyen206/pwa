@@ -26,8 +26,7 @@ class TestPushController extends Controller
             [
                 'title' => 'Test Notification from BE',
                 'body' => 'This is a test notification from BE.',
-                'icon' => '/images/icons/icon-192x192.png',
-                'url' => '/dashboard',
+                'url' => route('meters.create'),
             ]
         );
 

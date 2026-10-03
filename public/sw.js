@@ -228,9 +228,33 @@ self.addEventListener('push', e => {
         body: data.body || '',
         icon: '/icons/field_logger_192.png',
         data: {
-            url: null
+            url: data.url
         }
     };
 
     e.waitUntil(self.registration.showNotification(title, options));
+});
+
+self.addEventListener('notificationclick', e => {
+    const {notification} = e;
+    const {url} = notification.data || {};
+
+    notification.close();
+
+    if (!url) return;
+
+    e.waitUntil(
+        clients.matchAll({type: 'window', includeUncontrolled: true})
+            .then(clientList => {
+                for (const client of clientList) {
+                    if (client.url.includes(url) && 'focus' in client) {
+                        return client.focus();
+                    }
+                }
+
+                if (clients.openWindow) {
+                    return clients.openWindow(url);
+                }
+            })
+    );
 });
