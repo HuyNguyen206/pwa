@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\MeterController;
 use App\Http\Controllers\PwaManifestController;
 use App\Http\Controllers\ReadingController;
+use App\Http\Controllers\TestPushController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -24,6 +25,7 @@ Route::post('/login', [LoginController::class,'authenticate'])->name('login');
 Route::post('/logout', [LoginController::class,'logout'])->name('logout');
 
 Route::middleware(['auth'])->group(function(){
+    Route::get('test-push', TestPushController::class)->name('test-push');
     Route::post('/push-subscriptions', [\App\Http\Controllers\PushSubscriptionController::class, 'store'])->name('push-subscriptions.store');
     Route::delete('/push-subscriptions', [\App\Http\Controllers\PushSubscriptionController::class, 'destroy'])->name('push-subscriptions.destroy');
 

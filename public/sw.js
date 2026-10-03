@@ -15,7 +15,8 @@ async function cacheFirst({request, shellName}) {
 
         if ((res.ok && (res.type === 'basic' || res.type === 'cors'))
             || request.url.endsWith('app.css')) {
-            cache.put(request, res.clone()).catch(() => {});
+            cache.put(request, res.clone()).catch(() => {
+            });
         }
 
         return res;
@@ -106,7 +107,8 @@ async function staleWithRevalidate({request, shellName}) {
         .then((res) => {
             if ((res.ok && (res.type === 'basic' || res.type === 'cors'))
                 || request.url.endsWith('app.css')) {
-                cache.put(request, res.clone()).catch(() => {});
+                cache.put(request, res.clone()).catch(() => {
+                });
             }
             return res;
         })
@@ -173,7 +175,8 @@ self.addEventListener('fetch', e => {
                 const res = await fetch(request);
 
                 if (res.ok && request.url.startsWith(self.location.origin)) {
-                    cache.put(request, res.clone()).catch(() => {});
+                    cache.put(request, res.clone()).catch(() => {
+                    });
                 }
 
                 return res;
@@ -204,4 +207,30 @@ self.addEventListener('fetch', e => {
             // return await cacheFirst({request, shellName});
         })());
     }
+});
+
+self.addEventListener('push', e => {
+    let data = {};
+
+    if (e.data) {
+        try {
+            data = e.data.json();
+        } catch {
+            data = {
+                title: 'New notification',
+                body: e.data.text()
+            }
+        }
+    }
+
+    const title = data.title || 'New notification';
+    const options = {
+        body: data.body || '',
+        icon: '/icons/field_logger_192.png',
+        data: {
+            url: null
+        }
+    };
+
+    e.waitUntil(self.registration.showNotification(title, options));
 });
