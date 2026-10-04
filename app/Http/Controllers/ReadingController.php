@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\BroadcastPushNotification;
 use App\Models\Meter;
 use App\Models\Reading;
 use Illuminate\Http\Request;
@@ -35,12 +36,21 @@ class ReadingController extends Controller
 
         $reading->update($data);
 
+        $payload = [
+            'title' => 'Reading updated',
+            'body' => "A reading for meter {$meter->name} has been updated.",
+            'url' => route('meters.show', $meter),
+        ];
+
+        dispatch(new BroadcastPushNotification($payload));
+
+
         return redirect()->route('meters.show', $meter)->with('status','Reading updated');
     }
 
     public function destroy(Meter $meter, Reading $reading) {
         $reading->delete();
-        
+
         return back()->with('status','Reading deleted');
     }
 }

@@ -30,6 +30,35 @@ class PushNotificationService
     {
         $subscriptions = $user->pushSubscriptions;
 
+        return $this->queueForSubscriptions($subscriptions, $payload);
+    }
+
+    public function sendToAllSubscribers(array $payload, ?callable $scope = null): array
+    {
+        $query = PushSubscription::query();
+
+        if ($scope) {
+            $scope($query);
+        }
+
+        $query->chunkById(1000, function ($subscriptions) use ($payload) {
+            if ($subscriptions->isEmpty()) {
+                return;
+            }
+
+            $this->queueForSubscriptions($subscriptions, $payload);
+        });
+    }
+
+    /**
+     * @param mixed $subscriptions
+     * @param array $payload
+     * @return array
+     * @throws \ErrorException
+     * @throws \Random\RandomException
+     */
+    public function queueForSubscriptions(mixed $subscriptions, array $payload): array
+    {
         foreach ($subscriptions as $subscription) {
             $webPushSubscription = Subscription::create([
                 'endpoint' => $subscription->endpoint,
@@ -49,7 +78,7 @@ class PushNotificationService
 
         foreach ($this->webPush->flush() as $report) {
             $statusCode = $report->getResponse()?->getStatusCode();
-            $endPoint = (string) $report->getRequest()->getUri();
+            $endPoint = (string)$report->getRequest()->getUri();
 
             $results[] = [
                 'endpoint' => $endPoint,
