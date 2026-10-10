@@ -17,9 +17,17 @@
     <h1 class="font-semibold">
       <a href="{{ route('meters.index') }}">Field Logger</a>
     </h1>
-    <form method="POST" action="{{ route('logout') }}">@csrf
-      <button class="px-3 py-2 rounded-md bg-white/10 hover:bg-white/20">Logout</button>
-    </form>
+      @auth
+      <div class="flex justify-end items-center gap-2">
+          <div x-data="pushUnsubscribe">
+              <button @click="disable()" class="px-3 py-2 rounded-md bg-white/10 hover:bg-white/20">Disable</button>
+
+          </div>
+          <form method="POST" action="{{ route('logout') }}">@csrf
+              <button class="px-3 py-2 rounded-md bg-white/10 hover:bg-white/20">Logout</button>
+          </form>
+      </div>
+          @endauth
   </header>
   <x-online-status></x-online-status>
   <x-notification-banner></x-notification-banner>

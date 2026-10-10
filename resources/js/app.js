@@ -1,5 +1,6 @@
 import './bootstrap';
 import './components/notification-banner.js';
+import './components/push-unsubcribe.js';
 
 document.addEventListener('alpine:init', () => {
     Alpine.store('net', {

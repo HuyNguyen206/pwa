@@ -33,7 +33,7 @@ class PushNotificationService
         return $this->queueForSubscriptions($subscriptions, $payload);
     }
 
-    public function sendToAllSubscribers(array $payload, ?callable $scope = null): array
+    public function sendToAllSubscribers(array $payload, ?callable $scope = null)
     {
         $query = PushSubscription::query();
 
