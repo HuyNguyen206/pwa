@@ -1,6 +1,7 @@
 import './bootstrap';
 import './components/notification-banner.js';
 import './components/push-unsubcribe.js';
+import './components/reading-form.js';
 
 document.addEventListener('alpine:init', () => {
     Alpine.store('net', {

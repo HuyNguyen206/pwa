@@ -15,7 +15,7 @@
     <hr class="my-4 border-white/10">
 
     <h3 class="font-semibold mb-2">Add Reading</h3>
-    <form method="POST" action="{{ route('meters.readings.store', $meter) }}" class="space-y-3">
+    <form x-data="readingForm" x-on:submit="submitForm" method="POST" action="{{ route('meters.readings.store', $meter) }}" class="space-y-3">
         @include('readings._form', ['meter' => $meter])
         <button class="px-3 py-2 rounded-md bg-emerald-600 hover:bg-emerald-500">Add</button>
     </form>
