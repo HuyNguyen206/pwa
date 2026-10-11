@@ -1,9 +1,12 @@
+import {saveToOutbox} from "../storage/outbox.js";
+
 async function registerSync() {
-    if ('serviwceWorker' in navigator && 'SyncManager' in window) {
+    if ('serviceWorker' in navigator && 'SyncManager' in window) {
         try {
-
+            const registration = await navigator.serviceWorker.ready;
+            await registration.sync.register('sync-outbox');
         } catch (error) {
-
+            console.warn('Background sync registration failed:', error);
         }
     }
 }
@@ -11,14 +14,14 @@ async function registerSync() {
 document.addEventListener('alpine:init', () => {
     Alpine.data('readingForm', () => {
         return {
-            online: navigator.online,
+            online: navigator.onLine,
 
             init() {
                 window.addEventListener('online', () => this.online = true);
                 window.addEventListener('offline', () => this.online = false);
             },
 
-            submitForm(event) {
+            async submitForm(event) {
                 if (this.online) {
                     return;
                 }
@@ -34,21 +37,19 @@ document.addEventListener('alpine:init', () => {
                 const item = {
                     id: crypto.randomUUID(),
                     endpoint: this.$el.action,
-                    method: this.$el_method?.value ?? this.$el.method,
+                    method: this.$el._method?.value ?? this.$el.method,
                     payload,
                     createdAt: new Date().toISOString()
                 }
 
                 //save to index database
                 //register a service worker to handle the background sync
+                await saveToOutbox(item);
+                await registerSync();
 
                 if (item.method.toLowerCase() === 'post') {
                     this.$el.reset();
                 }
-
-
-
-
 
             }
         }
