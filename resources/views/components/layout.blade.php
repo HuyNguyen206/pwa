@@ -39,7 +39,7 @@
   </main>
 <script>
     window.addEventListener('load', e => {
-        navigator.serviceWorker.register('/sw.js', {scope: '/'})
+        navigator.serviceWorker.register('/sw.js', {scope: '/', type: "module"})
     })
 </script>
 </body>

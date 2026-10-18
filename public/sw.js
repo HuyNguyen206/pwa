@@ -1,3 +1,5 @@
+import {processOutbox} from "./pwa/outbox-processor.js";
+
 const PRECACHE_ENDPOINT = '/precache-manifest.json';
 const CACHE_PREFIX = 'app-shell-';
 const META_CACHE = 'meta-precache';
@@ -257,4 +259,13 @@ self.addEventListener('notificationclick', e => {
                 }
             })
     );
+});
+
+self.addEventListener('sync', e => {
+    if (e.tag ==='sync-outbox') {
+        console.log('[sw] sync event received for outbox');
+
+        e.waitUntil(processOutbox({dryRun: false}))
+    // Handle background sync events
+}
 });
